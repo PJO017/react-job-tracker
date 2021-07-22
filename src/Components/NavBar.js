@@ -1,23 +1,20 @@
 import React from 'react'
-import { makeStyles, AppBar, Toolbar, Grid, InputBase, IconButton, Badge } from '@material-ui/core'
-import NotificationsNoneIcon from '@material-ui/icons/NotificationsNone';
-import SearchIcon from '@material-ui/icons/Search';
+import { makeStyles, AppBar, Toolbar, Grid, Typography } from '@material-ui/core'
+import WorkIcon from '@material-ui/icons/Work'
 
-const useStyles = makeStyles({
-    navBar: {
-        backgroundColor: 'lightblue',
-        height: "50px",
-    }
-})
 
 export const NavBar = () => {
-
-    const classes = useStyles();
 
     return (
         <AppBar position="sticky">
             <Toolbar>
-                <Grid container>
+                <Grid container spacing={2}>
+                    <Grid item>
+                        <WorkIcon />
+                    </Grid>
+                    <Grid item>
+                        <Typography varaint=''>Job Application Tracker</Typography>
+                    </Grid>
                 </Grid>
             </Toolbar>
         </AppBar>
