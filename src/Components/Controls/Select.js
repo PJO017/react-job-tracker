@@ -1,5 +1,5 @@
 import React from 'react'
-import { FormControl, FormLabel, MenuItem, NativeSelect as MuiSelect} from '@material-ui/core';
+import { FormControl, FormLabel, NativeSelect as MuiSelect} from '@material-ui/core';
 
 
 export const Select = (props) => {
@@ -15,8 +15,8 @@ export const Select = (props) => {
             >
                 {
                     items.map(
-                        (item, index) => (
-                        <option value={item.id}>{item.title}</option>
+                        (item) => (
+                        <option key={item.id} value={item.id}>{item.title}</option>
                         )
                     )
                 }

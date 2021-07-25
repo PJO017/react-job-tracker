@@ -1,8 +1,8 @@
 import { Grid, makeStyles, TextField } from '@material-ui/core'
 import { Controls } from '../../Components/Controls/Controls'
-import { React } from 'react'
+import { React, useState } from 'react'
 import { useForm, Form } from '../../Components/useForm'
-import { DatePicker } from '@material-ui/pickers'
+
 
 
 
@@ -24,38 +24,77 @@ const statusItems = [
     {id:'noContact', title:'No Contact'}
 ]
 
+
 export const JobForm = () => {
+
+    const isValidUrl = (_string) => {
+        if (_string === "") return true;
+
+        let url_string; 
+        try {
+          url_string = new URL(_string);
+        } catch (_) {
+          return false;  
+        }
+        return url_string.protocol === "http:" || url_string.protocol === "https:";
+      }
+
+
+    const validate = () => {
+        let temp = {}
+
+        temp.companyName = values.companyName ? "" : "This field is required."
+        temp.position = values.position ? "" : "This field is required."
+        temp.websiteLink = isValidUrl(values.websiteLink)  ? "" : "Enter a valid link."
+        setErrors({
+            ...temp
+        })
+
+        return Object.values(temp).every(x => x === "");
+    }
+
+    const [errors, setErrors] = useState({})
     
     const {
         values,
         setValues,
+        resetForm,
         handleInputChange,
     } = useForm(initialFValues)
 
+    const handleSubmit = (e) => {
+        e.preventDefault()
+        if (validate())
+            window.alert("Valid Form")
+    }
+
     return (
-        <Form>
+        <Form onSubmit={handleSubmit}>
             <Grid container>
                 <Grid item xs={6}>
-                    <TextField 
+                    <Controls.Input 
                         variant='outlined'
                         label='Company Name'
                         name='companyName'
                         value={ values.companyName }
                         onChange={handleInputChange}
+                        error={errors.companyName}
                     />
-                    <TextField 
+                    <Controls.Input 
                         variant='outlined'
                         label='Position'
                         name='position'
                         value={ values.position }
                         onChange={ handleInputChange }
+                        error={errors.position}
                     />
-                    <TextField 
+                    <Controls.Input 
                         variant='outlined'
                         label='Website Link'
                         name='websiteLink'
                         value={ values.websiteLink }
                         onChange={ handleInputChange }
+                        error={errors.websiteLink}
                     />
                 </Grid>
                 <Grid item xs={6}>
@@ -79,6 +118,16 @@ export const JobForm = () => {
                         value={values.interviewDate}
                         onChange={handleInputChange}
                     />}
+                    <div>
+                        <Controls.Button 
+                        type='submit'
+                        text='Add' />   
+
+                        <Controls.Button 
+                        text="Reset"
+                        color="default"
+                        onClick={() => resetForm(setErrors)}/>
+                    </div>
                 </Grid>
             </Grid>
         </Form>
