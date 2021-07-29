@@ -4,9 +4,11 @@ import { JobForm } from './JobForm'
 
 const useStyles = makeStyles(theme => ({
     root: {
-        display: 'block',
+        display: 'flex',
+        flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'center',
+        width: '100%'
     },
     header: {
         height: '150px',
@@ -17,6 +19,7 @@ const useStyles = makeStyles(theme => ({
     },
     pageContent: {
         width: '60%',
+        justifyContent: 'center',
         margin: theme.spacing(5),
         padding: theme.spacing(2)
     }
@@ -24,6 +27,7 @@ const useStyles = makeStyles(theme => ({
 
 export const JobsPage = () => {
     const classes = useStyles();
+    const user = "Paul"
 
     return (
         <div className={classes.root}>
@@ -31,9 +35,7 @@ export const JobsPage = () => {
                 <Typography variant='h4' >Job / Internship Applications</Typography>
                 <Typography variant='subtitle2'>Current Applications</Typography>
             </Container>
-            <Paper className={classes.pageContent}>
-                <JobForm />
-            </Paper>
+            <Paper className={classes.pageContent}>Hello {user}</Paper>
         </div>
 
     )
