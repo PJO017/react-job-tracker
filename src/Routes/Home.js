@@ -1,10 +1,12 @@
 import React from 'react'
+import { useAuth } from '../Contexts/AuthContext'
 
-export const Home = (props) => {
-    const { user } = props
+export const Home = () => {
+    const { currentUser } = useAuth()
+
     return (
         <div>
-            {`Welcome ${user}`}
+            {`Welcome ${currentUser.email}`}
         </div>
     )
 }

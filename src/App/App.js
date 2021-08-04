@@ -1,23 +1,27 @@
-import React from 'react'
+import React, { useState } from 'react'
 import './App.css'
 import { createTheme, CssBaseline, makeStyles, ThemeProvider } from '@material-ui/core'
 import { NavBar } from '../Components/NavBar'
 import { JobsPage } from './Jobs/JobsPage'
+import { Home } from '../Routes/Home'
 import { Signup } from '../Routes/Signup'
 import { Login } from '../Routes/Login'
 import { AuthProvider } from '../Contexts/AuthContext'
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
+import { PrivateRoute } from '../Components/PrivateRoute'
+import firebase from '../firebase'
+import { JobsTable } from './Jobs/JobsTable'
 
 
 const theme = createTheme({
   palette: {
       primary: {
-          main: '#312e75',
-          light: '#f83245'
+          main: '#2e5975',
+          light: '#a2cce8',
       },
       secondary: {
-          main: '#f83245',
-          light: '#f8324526'
+          main: '#cadae6',
+          light: '#f83245'
       },
       background: {
           default: '#d6d6d6'
@@ -37,14 +41,14 @@ const useStlyes = makeStyles({
 
 export const App = () => {
   const classes = useStlyes()
-
+  
   return (
     <ThemeProvider theme={ theme } className={classes.root}>
-      <NavBar/>
       <Router>
         <AuthProvider>
+          <NavBar />
           <Switch>
-            <Route exact path='/' component={JobsPage}/>
+            <PrivateRoute exact path='/' component={JobsPage}/>
             <Route path='/signup' component={Signup} />
             <Route path='/login' component={Login} />
           </Switch>

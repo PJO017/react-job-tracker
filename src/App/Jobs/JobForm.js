@@ -1,18 +1,19 @@
-import { Grid, makeStyles, TextField } from '@material-ui/core'
+import { Grid, makeStyles, Paper, TextField } from '@material-ui/core'
 import { Controls } from '../../Components/Controls/Controls'
 import { React, useState } from 'react'
+import { v4 as uuidv4 } from 'uuid'
 import { useForm, Form } from '../../Components/useForm'
-
-
+import { useAuth } from '../../Contexts/AuthContext'
+import { database } from '../../firebaseDB'
 
 
 const initialFValues = {
-    id: 0,
+    id: '',
     companyName: '',
     position: '',
     websiteLink: '',
     dateApplied: new Date(),
-    status: 'applied',
+    status: 'Applied',
     interviewDate: new Date() ,
 }
 
@@ -54,6 +55,12 @@ export const JobForm = () => {
     }
 
     const [errors, setErrors] = useState({})
+    const { currentUser } = useAuth()
+    
+    const {
+        addJob,
+        getJobs,
+    } = database(currentUser.uid)
     
     const {
         values,
@@ -64,8 +71,13 @@ export const JobForm = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault()
-        if (validate())
+        if (validate()) {
             window.alert("Valid Form")
+            values.id = uuidv4()
+            addJob(values)
+        } else {
+            window.alert("Form not valid")
+        }
     }
 
     return (

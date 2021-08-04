@@ -1,67 +1,88 @@
-import React from 'react'
-import { makeStyles } from '@material-ui/core/styles';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableContainer from '@material-ui/core/TableContainer';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
-import Paper from '@material-ui/core/Paper';
+import React, { useState, useEffect } from 'react'
+import { Card, Container, makeStyles, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@material-ui/core'
+import { useAuth } from '../../Contexts/AuthContext'
+import { JobForm } from './JobForm'
+import { useTable } from '../../Components/useTable'
+import { db } from '../../firebase'
 
-const useStyles = makeStyles({
-    table: {
-        minWidth: 1000,
-        backgroundColor: 'white'
+
+
+const useStyles = makeStyles(theme => ({
+    root: {
+        padding: theme.spacing(4)
     },
-
-    paper: {
-        backgroundColor: '#546b8f',
-        
+    table: {
+        marginTop: theme.spacing(3),
+        '& tbody td': {
+            fontWeight: 300,
+        },
+        '&  tbody tr:hover': {
+            backgroundColor: '#fffbf2',
+            cursor: 'pointer'
+        }
     }
-})
+}))
 
-const createData = (id, company_name, position, website_link, date_applied, status, interview_date) => {
-    return { id, company_name, position, website_link, date_applied, status, interview_date }
-}
-
-const rows = [
-    createData(1, 'Tesla', 'Application Engineer', 'website', '7/20/2021', 'Pending', 'N/a'),
-    createData(2, 'Tesla', 'Application Engineer', 'website', '7/20/2021', 'Pending', 'N/a'),
-    createData(3, 'Tesla', 'Application Engineer', 'website', '7/20/2021', 'Pending', 'N/a')
+const headCells = [
+    {id:'companyName', label:'Company'},
+    {id:'position', label:'Position'},
+    {id:'websiteLink', label:'Website Link'},
+    {id:'dateApplied', label:'Date Applied'},
+    {id:'status', label:'Status'},
+    {id:'interviewDate', label:'Interview Date'}
 ]
 
-export const AppsTable = () => {
+export const JobsTable = () => {
+    const { currentUser } = useAuth()
+    const [jobs, setJobs] = useState([])
+    const [loading, setLoading] = useState(true)
+    
+    useEffect(() => {
+        const getJobs = async () => {
+            await db.collection('users').doc(currentUser.uid).collection('jobs').get()
+            .then(response => {
+                const jobsArr = [];
+                response.forEach(doc => {
+                    jobsArr.push(doc.data());
+                });
+                setJobs(jobsArr)
+                setLoading(false)
+            })
+            .catch(error => {
+                console.log(error)
+            })
+        }
+        getJobs()
+    },[])
 
-    const classes = useStyles();
+
+    const classes = useStyles()
+    const { TblContainer, TblHead } = useTable(jobs, headCells)
+
+    if (loading) {
+        return <h1>Loading...</h1>
+    }
 
     return (
-        <TableContainer component={Paper} className={classes.paper}>
-            <Table className={ classes.table }>
-                <TableHead>
-                    <TableRow>
-                        <TableCell>#</TableCell>
-                        <TableCell aling='right'>Company Name</TableCell>
-                        <TableCell aling='right'>Position</TableCell>
-                        <TableCell aling='right'>Website Link</TableCell>
-                        <TableCell aling='right'>Date Applied</TableCell>
-                        <TableCell aling='right'>Status</TableCell>
-                        <TableCell aling='right'>Interview Date</TableCell>
-                    </TableRow>
-                </TableHead>
+        <Paper className={classes.root}>
+            {/* <JobForm/> */}
+            <TblContainer>
+                <TblHead/>
                 <TableBody>
-                     {rows.map((row) => (
-                        <TableRow key={ row.id }>
-                            <TableCell component="th" scope="row" >{row.id}</TableCell>
-                            <TableCell aling='right'>{row.company_name}</TableCell>
-                            <TableCell aling='right'>{row.position}</TableCell>
-                            <TableCell aling='right'>{row.website_link}</TableCell>
-                            <TableCell aling='right'>{row.date_applied}</TableCell>
-                            <TableCell aling='right'>{row.status}</TableCell>
-                            <TableCell aling='right'>{row.interview_date}</TableCell>
-                        </TableRow>
-                    ))}
+                    {
+                        jobs.map((job) => (
+                            <TableRow key={job.id}>
+                                <TableCell align='left'>{job.companyName}</TableCell>
+                                <TableCell align='left'>{job.position}</TableCell>
+                                <TableCell align='left'><a href={job.websiteLink}>{job.websiteLink}</a></TableCell>
+                                <TableCell align='left'>{job.dateApplied.toDate().toLocaleDateString("en-US")}</TableCell>
+                                <TableCell align='left'>{job.status}</TableCell>
+                                {<TableCell align='left'>{job.status === 'interview' ? job.interviewDate.toDate().toLocaleDateString("en-US") : 'N/A'}</TableCell>}
+                            </TableRow>
+                        ))
+                    }
                 </TableBody>
-            </Table> 
-        </TableContainer>
+            </TblContainer>
+        </Paper>    
     )
 }

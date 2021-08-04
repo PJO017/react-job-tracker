@@ -1,6 +1,7 @@
 import {React, useState} from 'react'
 import { useForm, Form } from '../Components/useForm'
 import { Paper, Grid, Container, Typography, makeStyles } from '@material-ui/core'
+import { Alert, AlertTitle } from '@material-ui/lab'
 import { Controls } from '../Components/Controls/Controls'
 import { useAuth } from '../Contexts/AuthContext'
 import { Link, useHistory } from 'react-router-dom'
@@ -8,6 +9,7 @@ import { Link, useHistory } from 'react-router-dom'
 const useStyles = makeStyles(theme => ({
     root: {
         display: 'flex',
+        flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
         width: '100%',
@@ -47,38 +49,25 @@ export const Login = () => {
 
     const {currentUser, login} = useAuth()
 
-    const validate = () => {
-        let temp = {}
-
-        temp.email = (/$^|.+@.+..+/).test(values.email) ? "" : "Email is not valid."
-        temp.password = values.password.length > 7 ? "" : "Password must be at least 8 characters long."
-
-        setErrors({
-            ...temp
-        })
-
-        return Object.values(temp).every(x => x === "");
-    }
-
-    const handleSubmit = (e) => {
+    const handleSubmit = async(e) => {
         e.preventDefault()
-
-        if (validate())
         try {
             setLoading(true)
-            login(values.email, values.password);
+            await login(values.email, values.password);
             history.push('/')
         } catch {
-            window.alert("Failed to log in. Try again.")
+            setErrors({
+                ...errors,
+                fail: "Email or password incorrect"
+            })
         }
-
         setLoading(false)
     }
 
     const classes = useStyles()
 
     return (
-        <div className={classes.root}>
+        <div className={classes.root}>   
             <Paper component="div" style={{ display: 'flex',flexDirection: 'column', paddingTop: 50, paddingBottom: 10, width: '45%', minWidth: '300px', }}>
                 <Form  onSubmit={handleSubmit}>
                   <Grid 
@@ -87,6 +76,7 @@ export const Login = () => {
                   alignItems='center' 
                   justifyContent='center'>
                         <Typography variant='h3' >Log In</Typography>
+                        {errors.fail && <Alert severity='error'><AlertTitle>{errors.fail}</AlertTitle></Alert>}
                         <Controls.Input
                             className={classes.textField}
                             variant='outlined'
@@ -115,7 +105,7 @@ export const Login = () => {
                             />   
                         </div>
                         <div style={{paddingTop:20}}>
-                            <Typography variant='h7' >Need an account? <Link to='/signup'>Sign Up!</Link></Typography>
+                            <Typography>Need an account? <Link to='/signup'>Sign Up!</Link></Typography>
                         </div>
                     </Grid> 
                 </Form>

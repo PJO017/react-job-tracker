@@ -1,6 +1,11 @@
-import React from 'react'
-import { Container, makeStyles, Paper, Typography } from '@material-ui/core'
+import React, { useState, useEffect } from 'react'
+import { Card, Container, makeStyles, Paper, Table, TableBody, TableCell, TableContainer, TableRow, Typography } from '@material-ui/core'
+import { useAuth } from '../../Contexts/AuthContext'
 import { JobForm } from './JobForm'
+import { useTable } from '../../Components/useTable'
+import { database } from '../../firebaseDB'
+import { JobsTable } from './JobsTable'
+import { TableHead } from '@material-ui/core'
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -27,16 +32,20 @@ const useStyles = makeStyles(theme => ({
 
 export const JobsPage = () => {
     const classes = useStyles();
-    const user = "Paul"
+    const { currentUser } = useAuth()
+    const { getJobs } = database(currentUser.uid)
+
+    const [jobs, setJobs] = useState(getJobs())
+
+    useEffect(() => {
+    }, [])
 
     return (
         <div className={classes.root}>
             <Container className={ classes.header }>
                 <Typography variant='h4' >Job / Internship Applications</Typography>
-                <Typography variant='subtitle2'>Current Applications</Typography>
             </Container>
-            <Paper className={classes.pageContent}>Hello {user}</Paper>
+            <JobsTable/>
         </div>
-
     )
 }

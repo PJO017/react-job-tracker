@@ -1,10 +1,10 @@
 import {React, useState} from 'react'
 import { useForm, Form } from '../Components/useForm'
-import { Paper, Grid, Container, Typography, makeStyles } from '@material-ui/core'
+import { Paper, Grid, Typography, makeStyles } from '@material-ui/core'
+import { Alert, AlertTitle} from '@material-ui/lab'
 import { Controls } from '../Components/Controls/Controls'
 import { useAuth } from '../Contexts/AuthContext'
 import { Link, useHistory } from 'react-router-dom'
-
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -32,6 +32,7 @@ const useStyles = makeStyles(theme => ({
 }))
 
 const initialFValues = {
+    displayName: "",
     email: "",
     password: "",
     password_confirm: ""
@@ -47,11 +48,12 @@ export const Signup = () => {
         handleInputChange,
     } = useForm(initialFValues)
 
-    const {currentUser, signUp} = useAuth()
+    const {currentUser, signup} = useAuth()
 
     const validate = () => {
         let temp = {}
 
+        temp.displayName = values.displayName !== "" ? "" : "Must have display name"
         temp.email = (/$^|.+@.+..+/).test(values.email) ? "" : "Email is not valid."
         temp.password = values.password.length > 7 ? "" : "Password must be at least 8 characters long."
         temp.password_confirm = values.password === values.password_confirm ? "" : "Must match password."
@@ -63,23 +65,23 @@ export const Signup = () => {
         return Object.values(temp).every(x => x === "");
     }
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async(e) => {
         e.preventDefault()
-
-        if (validate())
-        try {
-            setLoading(true)
-            signUp(values.email, values.password);
-            history.push('/')
-        } catch {
-            window.alert("Failed to create account. Try again.")
+        if (validate()) {
+            try {
+                setLoading(true)
+                await signup(values.email, values.password)
+                // currentUser.displayName = values.displayName
+                history.push('/')
+            } catch {
+                setErrors({
+                    ...errors,
+                    fail: "Error. Try again."
+                })
+            }
         }
-
+        
         setLoading(false)
-            
-
-        
-        
     }
 
     const classes = useStyles()
@@ -94,6 +96,16 @@ export const Signup = () => {
                   alignItems='center' 
                   justifyContent='center'>
                     <Typography variant='h3'>Sign Up</Typography>
+                    {errors.fail && <Alert severity='error'><AlertTitle>{errors.fail}</AlertTitle></Alert>}
+                    <Controls.Input
+                        className={classes.textField}
+                        variant='outlined'
+                        label='Display Name'
+                        name='displayName'
+                        value={ values.displayName }
+                        onChange={handleInputChange}
+                        error={errors.displayName}
+                    />
                     <Controls.Input
                         className={classes.textField}
                         variant='outlined'
@@ -132,7 +144,7 @@ export const Signup = () => {
                         />   
                     </div>
                     <div style={{paddingTop:20}}>
-                        <Typography variant='h7' >Already have an account? <Link to='/login'>Log In.</Link></Typography>
+                        <Typography>Already have an account? <Link to='/login'>Log In.</Link></Typography>
                     </div>
                   </Grid> 
                 </Form>
