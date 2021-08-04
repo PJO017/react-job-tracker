@@ -42,9 +42,6 @@ export const JobsPage = () => {
 
     return (
         <div className={classes.root}>
-            <Container className={ classes.header }>
-                <Typography variant='h4' >Job / Internship Applications</Typography>
-            </Container>
             <JobsTable/>
         </div>
     )

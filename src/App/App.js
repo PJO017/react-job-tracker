@@ -20,8 +20,8 @@ const theme = createTheme({
           light: '#a2cce8',
       },
       secondary: {
-          main: '#cadae6',
-          light: '#f83245'
+          main: '#f50057',
+          light: '#ffa3ac'
       },
       background: {
           default: '#d6d6d6'

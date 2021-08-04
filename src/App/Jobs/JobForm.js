@@ -1,14 +1,13 @@
-import { Grid, makeStyles, Paper, TextField } from '@material-ui/core'
+import { Grid } from '@material-ui/core'
 import { Controls } from '../../Components/Controls/Controls'
-import { React, useState } from 'react'
-import { v4 as uuidv4 } from 'uuid'
+import { React, useState, useEffect } from 'react'
 import { useForm, Form } from '../../Components/useForm'
 import { useAuth } from '../../Contexts/AuthContext'
-import { database } from '../../firebaseDB'
 
 
+// Initial form values
 const initialFValues = {
-    id: '',
+    id: 0,
     companyName: '',
     position: '',
     websiteLink: '',
@@ -17,6 +16,7 @@ const initialFValues = {
     interviewDate: new Date() ,
 }
 
+// List of status the a job can have
 const statusItems = [
     {id:'applied', title:'Applied'},
     {id:'interview', title:'Interview'},
@@ -26,10 +26,10 @@ const statusItems = [
 ]
 
 
-export const JobForm = () => {
+export const JobForm = (props) => {
 
+    // Check if website link is valid
     const isValidUrl = (_string) => {
-        if (_string === "") return true;
 
         let url_string; 
         try {
@@ -40,28 +40,43 @@ export const JobForm = () => {
         return url_string.protocol === "http:" || url_string.protocol === "https:";
       }
 
-
+    // Validate form values
     const validate = () => {
         let temp = {}
 
         temp.companyName = values.companyName ? "" : "This field is required."
         temp.position = values.position ? "" : "This field is required."
         temp.websiteLink = isValidUrl(values.websiteLink)  ? "" : "Enter a valid link."
+        
+        // Get any errors in the form
         setErrors({
             ...temp
         })
 
+        // If every value in temp is "" then the form is valid
         return Object.values(temp).every(x => x === "");
     }
 
-    const [errors, setErrors] = useState({})
-    const { currentUser } = useAuth()
-    
-    const {
-        addJob,
-        getJobs,
-    } = database(currentUser.uid)
-    
+    // Validate form and submit data to firestore
+    const handleSubmit = (e) => {
+        e.preventDefault()
+        if (validate()) {
+            addOrEdit(values, resetForm) 
+        } 
+    }
+
+
+    useEffect(() => {
+        if (jobToEdit) {
+            setValues({
+                ...jobToEdit,
+                dateApplied: jobToEdit.dateApplied.toDate(), 
+                interviewDate: jobToEdit.interviewDate.toDate()
+            })
+        }
+    }, [])
+
+    // Form Component
     const {
         values,
         setValues,
@@ -69,16 +84,8 @@ export const JobForm = () => {
         handleInputChange,
     } = useForm(initialFValues)
 
-    const handleSubmit = (e) => {
-        e.preventDefault()
-        if (validate()) {
-            window.alert("Valid Form")
-            values.id = uuidv4()
-            addJob(values)
-        } else {
-            window.alert("Form not valid")
-        }
-    }
+    const [errors, setErrors] = useState({})
+    const { addOrEdit, jobToEdit } = props
 
     return (
         <Form onSubmit={handleSubmit}>
@@ -133,7 +140,7 @@ export const JobForm = () => {
                     <div>
                         <Controls.Button 
                         type='submit'
-                        text='Add' />   
+                        text={jobToEdit === null ? 'Add' : 'Edit'} />   
 
                         <Controls.Button 
                         text="Reset"

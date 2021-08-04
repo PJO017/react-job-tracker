@@ -8,7 +8,8 @@ import { SignalCellularNullRounded } from '@material-ui/icons'
 
 const useStyles = makeStyles(theme => ({
     root: {
-        flexGlow: 1
+        flexGlow: 1,
+        marginBottom: theme.spacing(3)
     },
     icon: {
         marginRight: theme.spacing(2)
