@@ -4,7 +4,7 @@ import { Table, TableHead, TableRow, TableCell, Typography, makeStyles, TablePag
 
 const useStyles = makeStyles(theme => ({
     table: {
-        marginTop: theme.spacing(1),
+        marginTop: theme.spacing(3),
         '& thead th': {
             fontWeight: 600,
             color: theme.palette.primary.main,
@@ -12,6 +12,7 @@ const useStyles = makeStyles(theme => ({
         },
         '& tbody td': {
             fontWeight: 300,
+            verticalAlign: 'top'
         },
         '&  tbody tr:hover': {
             backgroundColor: '#f5f8ff',
@@ -20,7 +21,7 @@ const useStyles = makeStyles(theme => ({
     }
 }))
 
-export const useTable = (records, headCells) => {
+export const useTable = (records, headCells, filterFn) => {
 
     const classes = useStyles()
 
@@ -31,7 +32,7 @@ export const useTable = (records, headCells) => {
   
 
     const TblContainer = props => (
-        <Table className={classes.table}>
+        <Table stickyHeader className={classes.table}>
             {props.children}
         </Table>
     )
@@ -64,7 +65,7 @@ export const useTable = (records, headCells) => {
     }
 
     const recordsAfterPagingAndSorting = () => {
-        return records.slice(page*rowsPerPage, (page+1)*rowsPerPage)
+        return filterFn.fn(records).slice(page*rowsPerPage, (page+1)*rowsPerPage)
     }
 
     const TblPagination = () => (<TablePagination

@@ -1,16 +1,15 @@
-import React, { useState } from 'react'
-import './App.css'
+import React from 'react'
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
 import { createTheme, CssBaseline, makeStyles, ThemeProvider } from '@material-ui/core'
-import { NavBar } from '../Components/NavBar'
-import { JobsPage } from './Jobs/JobsPage'
 import { Home } from '../Routes/Home'
 import { Signup } from '../Routes/Signup'
 import { Login } from '../Routes/Login'
+import { Jobs } from '../Routes/Jobs.js'
 import { AuthProvider } from '../Contexts/AuthContext'
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
 import { PrivateRoute } from '../Components/PrivateRoute'
-import firebase from '../firebase'
-import { JobsTable } from './Jobs/JobsTable'
+import { NavBar } from '../Components/NavBar'
+
+
 
 
 const theme = createTheme({
@@ -32,9 +31,10 @@ const theme = createTheme({
 const useStlyes = makeStyles({
   root: {
       display: 'flex',
+      flexDirection: 'column',
       alignItems: 'center',
       justifyContent: 'center',
-      height: '100%'
+      width: '100%'
   }
 })
 
@@ -48,7 +48,7 @@ export const App = () => {
         <AuthProvider>
           <NavBar />
           <Switch>
-            <PrivateRoute exact path='/' component={JobsPage}/>
+            <PrivateRoute exact path='/' component={Jobs}/>
             <Route path='/signup' component={Signup} />
             <Route path='/login' component={Login} />
           </Switch>

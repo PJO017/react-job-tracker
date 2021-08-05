@@ -1,15 +1,14 @@
-import React, { useState } from 'react'
+import React  from 'react'
 import { useAuth } from '../Contexts/AuthContext'
 import { Link, useHistory } from 'react-router-dom'
-import { makeStyles, AppBar, Toolbar, Grid, Typography } from '@material-ui/core'
+import { makeStyles, AppBar, Toolbar, Typography } from '@material-ui/core'
 import { Button, Controls } from '../Components/Controls/Controls'
 import WorkIcon from '@material-ui/icons/Work'
-import { SignalCellularNullRounded } from '@material-ui/icons'
 
 const useStyles = makeStyles(theme => ({
     root: {
         flexGlow: 1,
-        marginBottom: theme.spacing(3)
+    
     },
     icon: {
         marginRight: theme.spacing(2)
@@ -34,13 +33,14 @@ export const NavBar = () => {
     }
 
     const classes = useStyles()
+
     return (
         <div className={classes.root}>
             <AppBar position="sticky" style={{paddingBottom: '10px'}}>
             <Toolbar>
-                <WorkIcon className={classes.icon}/>
+                <WorkIcon className={classes.icon} fontSize="large"/>
                 <Typography className={classes.title}>Job Application Tracker</Typography>
-                {currentUser ? <Typography >Welcome { currentUser.email }</Typography> : null}
+                {currentUser ? <Typography >Welcome { currentUser.displayName }</Typography> : null}
                 <Controls.Button
                     text={currentUser ? 'Logout' : 'Login'}
                     color='secondary'

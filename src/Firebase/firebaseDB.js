@@ -32,10 +32,15 @@ export const database = (uid) => {
         })
     }
 
+    const deleteJob = (id) => {
+        return jobsColl.doc(id).delete()
+    }
+
     return {
         addJob,
         getJobs,
-        updateJob
+        updateJob,
+        deleteJob
     }
 }
 

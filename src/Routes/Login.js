@@ -1,6 +1,6 @@
 import {React, useState} from 'react'
 import { useForm, Form } from '../Components/useForm'
-import { Paper, Grid, Container, Typography, makeStyles } from '@material-ui/core'
+import { Paper, Grid, Typography, makeStyles } from '@material-ui/core'
 import { Alert, AlertTitle } from '@material-ui/lab'
 import { Controls } from '../Components/Controls/Controls'
 import { useAuth } from '../Contexts/AuthContext'
@@ -14,7 +14,7 @@ const useStyles = makeStyles(theme => ({
         justifyContent: 'center',
         width: '100%',
         height: '100%',
-        padding: theme.spacing(20),
+        paddingTop: theme.spacing(10),
     },
     pageContent: {
         display: 'flex',

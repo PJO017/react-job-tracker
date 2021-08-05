@@ -13,7 +13,7 @@ const useStyles = makeStyles(theme => ({
         justifyContent: 'center',
         width: '100%',
         height: '100%',
-        padding: theme.spacing(20),
+        paddingTop: theme.spacing(10),
     },
     pageContent: {
         display: 'flex',
@@ -70,8 +70,7 @@ export const Signup = () => {
         if (validate()) {
             try {
                 setLoading(true)
-                await signup(values.email, values.password)
-                // currentUser.displayName = values.displayName
+                await signup(values.email, values.password, values.displayName)
                 history.push('/')
             } catch {
                 setErrors({
