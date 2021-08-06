@@ -1,20 +1,46 @@
 import React  from 'react'
 import { useAuth } from '../Contexts/AuthContext'
 import { Link, useHistory } from 'react-router-dom'
-import { makeStyles, AppBar, Toolbar, Typography } from '@material-ui/core'
-import { Button, Controls } from '../Components/Controls/Controls'
-import WorkIcon from '@material-ui/icons/Work'
+import { makeStyles, AppBar, Toolbar, Typography, Container } from '@material-ui/core'
+import { Controls } from '../Components/Controls/Controls'
 
 const useStyles = makeStyles(theme => ({
     root: {
         flexGlow: 1,
+
+        '& .MuiButton-root': {
+            backgroundColor: '#3760bf'
+        },
+        '& .MuiButton-root:hover': {
+            backgroundColor: '#3d6ad4'
+        }
     
     },
     icon: {
         marginRight: theme.spacing(2)
     },
     title: {
-        flexGrow: 1,
+        margin: 0,
+        fontFamily: "Bungee",
+        color: 'white',
+        textDecoration: 'none',
+        transition: 'color 1s',
+
+        '& :hover': {
+            color: 'royalblue'
+        }
+
+    },
+    jobLink : {
+        marginLeft: '35vw',
+        marginTop: 10,
+        fontSize: 15,
+        color: 'white',
+        textDecoration: 'none',
+
+        '& :hover': {
+            color: 'royalblue'
+        }
     }
 }))
 
@@ -28,7 +54,7 @@ export const NavBar = () => {
         }
         else {
             logout()
-            history.push('/login')
+            history.push('/')
         }
     }
 
@@ -36,15 +62,32 @@ export const NavBar = () => {
 
     return (
         <div className={classes.root}>
-            <AppBar position="sticky" style={{paddingBottom: '10px'}}>
-            <Toolbar>
-                <WorkIcon className={classes.icon} fontSize="large"/>
-                <Typography className={classes.title}>Job Application Tracker</Typography>
-                {currentUser ? <Typography >Welcome { currentUser.displayName }</Typography> : null}
+            <AppBar position="sticky" style={{paddingBottom: '10px', maxHeight: 80}}>
+            <Toolbar style={{paddingTop: '10px'}}>
+                <Link className={classes.title} to='/'><h1>RJT</h1></Link>
+                <Container style={{ flexGrow: 1, display: 'flex', justifyContent: 'center' }}>
+                    {
+                        currentUser ?
+                        <div style={{ display: 'flex', flexGrow: 1, justifyContent: 'space-between'}}>
+                             <Link className={classes.jobLink} to='/jobs'>
+                                <h1>JOBS</h1>
+                            </Link>
+                            <Typography 
+                            variant='h5'
+                            style={{ marginTop: '3%'}}
+                            >
+                                Welcome { currentUser.displayName }!
+                            </Typography> 
+                        </div>
+                        
+                        : null
+                    }
+                </Container>
                 <Controls.Button
                     text={currentUser ? 'Logout' : 'Login'}
                     color='secondary'
                     onClick={handleClick}
+                    style={{paddingBottom: '10px'}}
                 />
             </Toolbar>
         </AppBar>

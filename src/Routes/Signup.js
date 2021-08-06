@@ -48,7 +48,7 @@ export const Signup = () => {
         handleInputChange,
     } = useForm(initialFValues)
 
-    const {currentUser, signup} = useAuth()
+    const { signup } = useAuth()
 
     const validate = () => {
         let temp = {}
@@ -71,7 +71,7 @@ export const Signup = () => {
             try {
                 setLoading(true)
                 await signup(values.email, values.password, values.displayName)
-                history.push('/')
+                history.push('/jobs')
             } catch {
                 setErrors({
                     ...errors,
@@ -99,7 +99,7 @@ export const Signup = () => {
                     <Controls.Input
                         className={classes.textField}
                         variant='outlined'
-                        label='Display Name'
+                        label='Name'
                         name='displayName'
                         value={ values.displayName }
                         onChange={handleInputChange}

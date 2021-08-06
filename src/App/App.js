@@ -8,14 +8,15 @@ import { Jobs } from '../Routes/Jobs.js'
 import { AuthProvider } from '../Contexts/AuthContext'
 import { PrivateRoute } from '../Components/PrivateRoute'
 import { NavBar } from '../Components/NavBar'
+import './App.css'
 
 
 
 
-const theme = createTheme({
+const mainTheme = createTheme({
   palette: {
       primary: {
-          main: '#2e5975',
+          main: '#2f51a1',
           light: '#a2cce8',
       },
       secondary: {
@@ -23,10 +24,37 @@ const theme = createTheme({
           light: '#ffa3ac'
       },
       background: {
-          default: '#d6d6d6'
+          default: '#d1d1d1'
       }
-  }
+  },
+  typography: {
+    fontFamily: [
+      'Signika Negative',
+      '-apple-system',
+      'BlinkMacSystemFont',
+      '"Segoe UI"',
+      'Roboto',
+      '"Helvetica Neue"',
+      'Arial',
+      'sans-serif',
+      '"Apple Color Emoji"',
+      '"Segoe UI Emoji"',
+      '"Segoe UI Symbol"',
+    ].join(','),
+  },
+
+  overrides: {
+    MuiCssBaseline: {
+        "@global": {
+          body: {
+            backgroundolor: '#0093E9',
+            backgroundImage: 'linear-gradient(180deg, #0093E9 0%, #e1e5ea 50%)',
+        }
+      }
+    },
+  },
 })
+
 
 const useStlyes = makeStyles({
   root: {
@@ -34,8 +62,9 @@ const useStlyes = makeStyles({
       flexDirection: 'column',
       alignItems: 'center',
       justifyContent: 'center',
-      width: '100%'
-  }
+      width: '100%',
+
+  },
 })
 
 
@@ -43,18 +72,19 @@ export const App = () => {
   const classes = useStlyes()
   
   return (
-    <ThemeProvider theme={ theme } className={classes.root}>
+    <ThemeProvider theme={ mainTheme } className={classes.root}>
+      <CssBaseline/>
       <Router>
         <AuthProvider>
           <NavBar />
           <Switch>
-            <PrivateRoute exact path='/' component={Jobs}/>
+            <Route exact path='/' component={Home} />
             <Route path='/signup' component={Signup} />
             <Route path='/login' component={Login} />
+            <PrivateRoute exact path='/jobs' component={Jobs}/>
           </Switch>
         </AuthProvider>
       </Router> 
-    <CssBaseline/>
     </ThemeProvider>
   )
 }

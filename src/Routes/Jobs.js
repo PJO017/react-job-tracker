@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { makeStyles, Paper, TableBody, TableCell, TableRow, Toolbar, InputAdornment, Container} from '@material-ui/core'
+import { makeStyles, Paper, TableBody, TableCell, TableRow, Toolbar, InputAdornment, Container, Typography} from '@material-ui/core'
 import AddIcon from '@material-ui/icons/Add';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
@@ -49,7 +49,7 @@ export const Jobs = () => {
     const [jobToEdit, setJobToEdit] = useState(null)
     const [filterFn, setFilterFn] = useState({ fn: items => { return items }})
     const [notify, setNotify] = useState({isOpen: false, message:'', type:''})
-    const { addJob, getJobs, updateJob, deleteJob } = database(currentUser.uid)
+    const { addJob, getJobs, updateJob, deleteJob } = database(currentUser.uid, setJobs, setLoading)
 
 
 
@@ -84,13 +84,11 @@ export const Jobs = () => {
         setJobToEdit(null)
         resetForm()
         setOpenPopup(false)
-        getJobs(setJobs, setLoading) 
     }
  
     const onDelete = (id) => {
         if(window.confirm("Are you sure you want to delete this job?")) {
             deleteJob(id)
-            getJobs(setJobs, setLoading)
             setNotify({
                 isOpen: true,
                 message: "Job Deleted",
@@ -119,13 +117,13 @@ export const Jobs = () => {
 
     // Get jobs from firestore on mount
     useEffect(() => {
-        getJobs(setJobs, setLoading)
+        getJobs()
     },[])
 
     const classes = useStyles()
 
     if (loading) {
-        return <h1>Loading...</h1>
+        return <Typography variant='h3'>Loading...</Typography>
     }
     return (
         <Container>
@@ -158,13 +156,13 @@ export const Jobs = () => {
                         {
                             recordsAfterPagingAndSorting().map((job) => (
                                 <TableRow key={job.id}>
-                                    <TableCell >{job.companyName}</TableCell>
-                                    <TableCell >{job.position}</TableCell>
-                                    <TableCell ><a href={job.websiteLink}>{job.websiteLink}</a></TableCell>
-                                    <TableCell >{job.dateApplied.toDate().toLocaleDateString("en-US")}</TableCell>
-                                    <TableCell >{job.status}</TableCell>
-                                    <TableCell >{job.status === 'interview' ? job.interviewDate.toDate().toLocaleDateString("en-US") : 'N/A'}</TableCell>
-                                    <TableCell>
+                                    <TableCell align='center'>{job.companyName}</TableCell>
+                                    <TableCell align='center'>{job.position}</TableCell>
+                                    <TableCell align='center'><a href={job.websiteLink}>Application Link</a></TableCell>
+                                    <TableCell align='center'>{job.dateApplied.toDate().toLocaleDateString("en-US")}</TableCell>
+                                    <TableCell align='center'>{job.status}</TableCell>
+                                    <TableCell align='center'>{job.status === 'interview' ? job.interviewDate.toDate().toLocaleDateString("en-US") : 'N/A'}</TableCell>
+                                    <TableCell align='center'>
                                         <Controls.ActionButton 
                                             color='primary'
                                             onClick={() => {openInPopup(job)}}>

@@ -1,5 +1,4 @@
 import DateFnsUtils from '@date-io/date-fns'
-import { DateRangeOutlined } from '@material-ui/icons'
 import { KeyboardDatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers'
 import React from 'react'
 

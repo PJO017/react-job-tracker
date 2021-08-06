@@ -1,17 +1,20 @@
 import { db } from './firebase'
 import { v4 as uuidv4 } from 'uuid'
 
-export const database = (uid) => {
-    const userColl = db.collection('users').doc(uid)
-    const jobsColl = userColl.collection('jobs')
+export const database = (uid, setJobs, setLoading) => {
+    const users = db.collection('users').doc(uid)
+    const jobsColl = users.collection('jobs')
 
-    const addJob = (values) => {
+    const addJob = async (values) => {
         values.id = uuidv4()
-        jobsColl.doc(values.id).set({...values})
+        await jobsColl.doc(values.id).set({...values})
+        .then(() => {getJobs()})
     }
     
-    const getJobs = async (setJobs, setLoading) => {
-        await db.collection('users').doc(uid).collection('jobs').get()
+    const getJobs = async () => {
+        setLoading(true)
+        setJobs([])
+        await jobsColl.get()
         .then(response => {
             const jobsArr = [];
             response.forEach(doc => {
@@ -26,14 +29,15 @@ export const database = (uid) => {
     }
 
     const updateJob = async (job) => {
-        const jobDoc = jobsColl.doc(job.id)
-        return jobDoc.update({
+        await jobsColl.doc(job.id).update({
             ...job
         })
+        .then(() => {getJobs()})
     }
 
-    const deleteJob = (id) => {
-        return jobsColl.doc(id).delete()
+    const deleteJob = async (id) => {
+        await jobsColl.doc(id).delete()
+        .then(() => {getJobs()})
     }
 
     return {

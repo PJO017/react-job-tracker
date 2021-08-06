@@ -20,16 +20,10 @@ const useStyles = makeStyles(theme => ({
         display: 'flex',
         flexDirection: 'column',
         width: '45%',
-        height: '80%',
-        margin: theme.spacing(5),
-        padding: theme.spacing(2),
-
+        minWidth: '300px',
+        paddingTop: '50px',
+        paddingBottom: '10px',
     },
-    gridItem: {
-        display: 'flex',
-        marginLeft: '50px',
-        padding: '10px'
-    }
 }))
 
 const initialFValues = {
@@ -47,14 +41,14 @@ export const Login = () => {
         handleInputChange,
     } = useForm(initialFValues)
 
-    const {currentUser, login} = useAuth()
+    const { login } = useAuth()
 
     const handleSubmit = async(e) => {
         e.preventDefault()
         try {
             setLoading(true)
             await login(values.email, values.password);
-            history.push('/')
+            history.push('/jobs')
         } catch {
             setErrors({
                 ...errors,
@@ -65,10 +59,11 @@ export const Login = () => {
     }
 
     const classes = useStyles()
+    // style={{ display: 'flex',flexDirection: 'column', paddingTop: 50, paddingBottom: 10, width: '45%', minWidth: '300px', }}
 
     return (
         <div className={classes.root}>   
-            <Paper component="div" style={{ display: 'flex',flexDirection: 'column', paddingTop: 50, paddingBottom: 10, width: '45%', minWidth: '300px', }}>
+            <Paper component="div" className={classes.pageContent}>
                 <Form  onSubmit={handleSubmit}>
                   <Grid 
                   container 
