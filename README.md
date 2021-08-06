@@ -1,5 +1,5 @@
 # Job / Internship Tracking App
 Made with:
 React,
-MaterialUI
+MaterialUI,
 Firebase
